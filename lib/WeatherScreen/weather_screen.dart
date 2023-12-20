@@ -1,12 +1,8 @@
 import 'dart:convert';
-import 'dart:ui';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_firebase/ui/posts/posts.screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../utils/utils.dart';
-import 'dart:math';
 import 'additional_item.dart';
 import 'weather_icon.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,7 +17,8 @@ class WeatherScreen extends StatefulWidget {
 
 class _WeatherScreenState extends State<WeatherScreen> {
   final ref = FirebaseDatabase.instance.ref().child('Data').child('Soil Data');
-  final real = FirebaseDatabase.instance.ref().child('Data').child('Realtime Soil Data');
+  final real =
+  FirebaseDatabase.instance.ref().child('Data').child('Realtime Soil Data');
   final auth = FirebaseAuth.instance;
 
   String temperature = 'N/A';
@@ -30,7 +27,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   String temp1 = 'N/A';
   String moisture1 = 'N/A';
-  String humidity1= 'N/A';
+  String humidity1 = 'N/A';
 
   Future<Map<String, dynamic>> getWeatherUpdate() async {
     try {
@@ -92,7 +89,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
       });
     });
 
-
     getWeatherUpdate();
   }
 
@@ -117,13 +113,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 });
               },
               icon: const Icon(Icons.refresh))
-
         ],
         leading: IconButton(
           onPressed: () {
-
-             auth.signOut().then((value) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+            auth.signOut().then((value) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()));
             }).onError((error, stackTrace) {
               Utils().toastMessage(error.toString());
             });
@@ -131,15 +126,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
           icon: const Icon(Icons.logout),
         ),
       ),
-      body: Container(
+      body: SizedBox(
         height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.deepPurple, Colors.grey.shade500],
-          ),
-        ),
         child: FutureBuilder(
           future: getWeatherUpdate(),
           builder: (context, snapshot) {
@@ -161,43 +149,110 @@ class _WeatherScreenState extends State<WeatherScreen> {
             final currentWindSpeed = currentWeatherData['wind']['speed'];
             final currentHumidity = currentWeatherData['main']['humidity'];
             final currentIconCode = currentWeatherData['weather'][0]['icon'];
-            int tempCelsius =  (currentTemp - 273.15).round();
+            int tempCelsius = (currentTemp - 273.15).round();
             return Padding(
               padding: const EdgeInsets.all(16),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Text(
+                      'Realtime Soil Data',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     SizedBox(
-                      width: double.infinity,
-                      child: Card(
-                      color: Colors.deepPurple.shade200,
-                        elevation: 10,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      height: 120,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 7,
                             child: Padding(
-                              padding: const EdgeInsets.all(16),
+                              padding: const EdgeInsets.all(8.0),
+                              child: AdditionalItem(
+                                icon: Icons.thermostat_rounded,
+                                label: 'Temperature',
+                                value: temp1,
+                              ),
+                            ),
+                          ),
+                          Card(
+                            elevation: 7,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: AdditionalItem(
+                                icon: Icons.water_drop_outlined,
+                                label: 'Moisture',
+                                value: moisture1,
+                              ),
+                            ),
+                          ),
+                          Card(
+                            elevation: 7,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: AdditionalItem(
+                                icon: Icons.cloud_outlined,
+                                label: 'Humidity',
+                                value: humidity1,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    //additional info
+                    const Text(
+                      'Additional Info',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+
+                    SizedBox(
+                      height: 180,
+
+                      child: Row(
+
+                        children: [
+                          Card(
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Container(
+                              width: 120,
+                              height: 167,
+                              padding: const EdgeInsets.all(12),
                               child: Column(
                                 children: [
                                   Text(
-
-                                    '$tempCelsius °C' ,
+                                    '$tempCelsius °C',
                                     style: const TextStyle(
-                                      fontSize: 36,
+                                      fontSize: 30,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
                                   ),
-                                  const SizedBox(height: 16),
                                   WeatherIcon(
                                     iconCode: currentIconCode,
-                                    iconSize: 64,
-
+                                    iconSize: 55,
                                   ),
                                   const SizedBox(height: 16),
                                   Text(
@@ -211,70 +266,61 @@ class _WeatherScreenState extends State<WeatherScreen> {
                               ),
                             ),
                           ),
-                        ),
+                          SizedBox(
+                            height: 119,
+                            width: 251,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  elevation: 7,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: AdditionalItem(
+                                      icon: Icons.water_drop_outlined,
+                                      label: 'Humidity',
+                                      value: currentHumidity.toString(),
+                                    ),
+                                  ),
+                                ),
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  elevation: 7,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: AdditionalItem(
+                                      icon: Icons.air_outlined,
+                                      label: 'Wind Speed',
+                                      value: currentWindSpeed.toString(),
+                                    ),
+                                  ),
+                                ),
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  elevation: 7,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: AdditionalItem(
+                                      icon: Icons.beach_access_outlined,
+                                      label: 'Pressure',
+                                      value: currentPressure.toString(),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Realtime Soil Data',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        AdditionalItem(
-                          icon: Icons.thermostat_rounded,
-                          label: 'Temperature',
-                          value: temp1,
-                        ),
-                        AdditionalItem(
-                          icon: Icons.water_drop_rounded,
-                          label: 'Moisture',
-                          value: moisture1,
-                        ),
-                        AdditionalItem(
-                          icon: Icons.cloud_rounded,
-                          label: 'Humidity',
-                          value: humidity1,
-                        ),
-                      ],
                     ),
                     const SizedBox(height: 12),
-                    //additional info
-                    const Text(
-                      'Additional Info',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        AdditionalItem(
-                          icon: Icons.water_drop_outlined,
-                          label: 'Humidity',
-                          value: currentHumidity.toString(),
-                        ),
-                        AdditionalItem(
-                          icon: Icons.air_outlined,
-                          label: 'Wind Speed',
-                          value: currentWindSpeed.toString(),
-                        ),
-                        AdditionalItem(
-                          icon: Icons.beach_access_outlined,
-                          label: 'Pressure',
-                          value: currentPressure.toString(),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height:12),
                     const Text(
                       'User Soil Data',
                       style: TextStyle(
@@ -304,7 +350,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       ],
                     ),
                     const SizedBox(height: 20),
-
                   ],
                 ),
               ),
@@ -312,7 +357,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
           },
         ),
       ),
-
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase/WeatherScreen/main_page.dart';
 
 class PostScreen extends StatefulWidget {
   const PostScreen({Key? key}) : super(key: key);
@@ -15,16 +16,14 @@ class _PostScreenState extends State<PostScreen> {
   final searchFilter = TextEditingController();
   String selectedCrop = '';
 
-
-  void storeSoilData(String cropName, int temperature, int moisture, int humidity) {
+  void storeSoilData(
+      String cropName, int temperature, int moisture, int humidity) {
     ref.child('Data').child('Soil Data').update({
       'temperature': temperature,
       'moisture': moisture,
       'humidity': humidity,
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +32,11 @@ class _PostScreenState extends State<PostScreen> {
         title: const Text('Crops'),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.deepPurple, Colors.grey.shade500],
-          ),
-        ),
         child: Column(
           children: [
-            SizedBox(height: 10,),
+            const SizedBox(
+              height: 10,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextFormField(
@@ -53,22 +47,25 @@ class _PostScreenState extends State<PostScreen> {
                   hintStyle: TextStyle(
                     color: Colors.white,
                   ),
-                  prefixIcon: Icon(Icons.search, color: Colors.white,),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.white,
+                  ),
                 ),
                 onChanged: (String value) {
                   setState(() {});
                 },
               ),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildCropButton('Fenugreek', 25, 60, 80, 'images/methi.png'),
-                    _buildCropButton('Jowar', 28, 55, 75, 'images/jowar.png'),
-                    _buildCropButton('Cotton', 23, 70, 85, 'images/cotton.png'),
+                    _buildCropButton('Fenugreek', 24, 17, 47, 'images/methi.png'),
+                    _buildCropButton('Jowar', 35, 14, 50, 'images/jowar.png'),
+                    _buildCropButton('Cotton', 36, 75, 50, 'images/cotton.png'),
                     _buildCropButton('Gram', 30, 50, 70, 'images/methi.png'),
                   ],
                 ),
@@ -80,16 +77,19 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 
-  Widget _buildCropButton(String cropName, int temperature, int moisture, int humidity, String cropImage) {
+  Widget _buildCropButton(String cropName, int temperature, int moisture,
+      int humidity, String cropImage) {
     bool isSelected = cropName == selectedCrop;
 
     return GestureDetector(
       onTap: () {
-
         setState(() {
           selectedCrop = isSelected ? '' : cropName;
         });
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const MainPage ()));
         storeSoilData(cropName, temperature, moisture, humidity);
+
       },
       child: Container(
         width: double.infinity,
@@ -97,25 +97,30 @@ class _PostScreenState extends State<PostScreen> {
         margin: const EdgeInsets.all(10),
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue : Colors.white,
+          color: isSelected ? Colors.blueGrey : Colors.grey,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(' $cropName', style:  TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: isSelected ? Colors.white : Colors.black,
-                ),),
+                SizedBox(
+                  width: 220,
+                  child: Text(
+                    ' $cropName',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ),
               ],
             ),
-            SizedBox(width: 100,),
-            SizedBox(width: 30,),
-            Image.asset(cropImage)
+            SizedBox(width: 100, child: Image.asset(cropImage))
           ],
         ),
       ),

@@ -13,21 +13,31 @@ class AdditionalItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(icon, size: 36, color: Colors.white,),
-        const SizedBox(height: 8),
-        Text(label, style:const TextStyle(color: Colors.white),),
-        const SizedBox(height: 8),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+    return SizedBox(
+      width: 92,
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            size: 36,
             color: Colors.white,
           ),
-        )
-      ],
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

@@ -47,7 +47,7 @@ class _VerifyCodeState extends State<VerifyCode> {
                   );
                   try{
                     await auth.signInWithCredential(credential);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PostScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const PostScreen()));
                   }
                   catch(e){
                       setState(() {
